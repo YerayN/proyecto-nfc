@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Carta Interactiva - Bar La Plaza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #101115;
+            --bg-card: rgba(22, 23, 27, 0.8);
+            --bg-card-solid: #16171B;
+            --accent-orange: #FE9400;
+            --text-gold: #f1c40f;
+            --text-body: #E0E3EB;
+            --accent-red: #E53935;
+            --accent-green: #00C853;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            margin: 0;
+            padding: 15px;
+            -webkit-overflow-scrolling: touch; 
+            padding-bottom: 40px; /* Espacio extra al final */
+        }
+        
+        .cabecera {
+            text-align: center;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        h1 { 
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FE9400 0%, #ffc163 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0; 
+            font-size: 26px;
+        }
+        
+        .contenedor-principal { max-width: 450px; margin: 0 auto; }
+
+        /* 1. SECCIÓN DE ALÉRGENOS (Arriba, para que se configure antes de pedir) */
+        details {
+            background-color: var(--bg-card);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden; 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        summary {
+            padding: 14px;
+            color: var(--text-gold);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        summary::-webkit-details-marker { display: none; }
+        
+        .filtros-contenido {
+            padding: 0 14px 14px 14px;
+            display: flex;
+            flex-wrap: wrap; 
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 5px;
+            padding-top: 15px;
+        }
+
+        .etiqueta-filtro {
+            display: flex;
+            align-items: center;
+            background-color: #393C45;
+            padding: 10px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            user-select: none; 
+            transition: all 0.2s ease;
+        }
+        .etiqueta-filtro input { display: none; }
+        .etiqueta-filtro:has(input:checked) {
+            background-color: #e74c3c; 
+            color: white;
+            border-color: #c0392b;
+        }
+
+        /* 2. BARRA DE CATEGORÍAS (Deslizable horizontalmente) */
+        .categorias-scroll {
+            display: flex;
+            overflow-x: auto; /* Permite scroll horizontal */
+            gap: 10px;
+            padding-bottom: 15px; /* Espacio para la sombra */
+            margin-bottom: 10px;
+            /* Oculta la barra de scroll nativa para que quede limpio */
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+        }
+        .categorias-scroll::-webkit-scrollbar { display: none; }
+
+        .btn-categoria {
+            background-color: var(--bg-card-solid);
+            color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        /* Estilo para la categoría seleccionada */
+        .btn-categoria.activo {
+            background: linear-gradient(135deg, #FE9400 0%, #ffc163 100%);
+            color: #1a1a1a;
+            border: none;
+            box-shadow: 0 4px 10px rgba(254, 148, 0, 0.3);
+        }
+
+        /* 3. DISEÑO DE LOS PLATOS */
+        .plato {
+            background-color: var(--bg-card);
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.3s ease; /* Pequeña animación al cargar platos */
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .plato-titulo {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+        .plato h3 { margin: 0; color: #fff; font-size: 17px; font-family: 'Poppins', sans-serif; line-height: 1.2;}
+        .precio { color: var(--accent-green); font-weight: 700; font-size: 18px; font-family: 'Poppins', sans-serif;}
+        .descripcion { color: #aaa; font-size: 13px; margin: 5px 0 10px 0; line-height: 1.4; }
+        .alergenos-lista { color: var(--accent-red); font-size: 11px; font-weight: 600; display: flex; align-items: center; flex-wrap: wrap; gap: 5px;}
+        .sin-alergenos { color: #888; font-size: 11px; }
+        
+        .btn-volver {
+            display: block;
+            text-align: center;
+            color: #ccc;
+            text-decoration: none;
+            margin-top: 30px;
+            padding: 16px;
+            background-color: #2c2c2c;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        <div class="cabecera">
+            <h1>Carta Interactiva</h1>
+        </div>
+
+        <details>
+            <summary>
+                <span>⚠️ Alergias e Intolerancias</span>
+                <span>▼</span>
+            </summary>
+            <div class="filtros-contenido">
+                <label class="etiqueta-filtro"><input type="checkbox" value="Gluten" onchange="aplicarFiltros()">🌾 Gluten</label>
+                <label class="etiqueta-filtro"><input type="checkbox" value="Lactosa" onchange="aplicarFiltros()">🥛 Lactosa</label>
+                <label class="etiqueta-filtro"><input type="checkbox" value="Marisco" onchange="aplicarFiltros()">🦐 Marisco</label>
+                <label class="etiqueta-filtro"><input type="checkbox" value="FrutosSecos" onchange="aplicarFiltros()">🥜 Frutos Secos</label>
+                <label class="etiqueta-filtro"><input type="checkbox" value="Huevo" onchange="aplicarFiltros()">🥚 Huevo</label>
+            </div>
+        </details>
+
+        <div class="categorias-scroll" id="barra-categorias">
+            </div>
+
+        <div id="contenedor-carta"></div>
+
+        <a href="index.html" class="btn-volver">🔙 Volver al menú principal</a>
+    </div>
+
+    <script>
+        // --- 1. NUESTRA BASE DE DATOS COMPLETA ---
+        const baseDeDatosPlatos = [
+            // ENTRANTES
+            { categoria: "Entrantes", nombre: "Ensaladilla Rusa Casera", descripcion: "Con mayonesa suave, atún y piquillos.", precio: "4.50€", alergenos: ["Marisco", "Huevo"] },
+            { categoria: "Entrantes", nombre: "Croquetas de Jamón Ibérico", descripcion: "Ración de 6 unidades, súper cremosas.", precio: "7.00€", alergenos: ["Gluten", "Lactosa", "Huevo"] },
+            { categoria: "Entrantes", nombre: "Tabla de Quesos de la Tierra", descripcion: "Curado, semicurado y azul con nueces.", precio: "12.00€", alergenos: ["Lactosa", "FrutosSecos"] },
+            { categoria: "Entrantes", nombre: "Patatas Bravas", descripcion: "Salsa picantona receta de la abuela.", precio: "5.00€", alergenos: [] },
+            
+            // PRINCIPALES
+            { categoria: "Principales", nombre: "Solomillo al Whisky", descripcion: "Nuestra especialidad, servido con patatas fritas.", precio: "14.00€", alergenos: [] },
+            { categoria: "Principales", nombre: "Hamburguesa Gourmet", descripcion: "200g de ternera, queso cheddar, bacon y pan brioche.", precio: "11.50€", alergenos: ["Gluten", "Lactosa", "Huevo"] },
+            { categoria: "Principales", nombre: "Arroz del Senyoret (Ración)", descripcion: "Típico de Alicante, con marisco pelado.", precio: "15.00€", alergenos: ["Marisco"] },
+            { categoria: "Principales", nombre: "Costillar a la Barbacoa", descripcion: "Asado a baja temperatura durante 12 horas.", precio: "16.00€", alergenos: [] },
+            
+            // POSTRES
+            { categoria: "Postres", nombre: "Tarta de Queso al Horno", descripcion: "Con base de galleta y sirope de frutos rojos.", precio: "5.50€", alergenos: ["Gluten", "Lactosa", "FrutosSecos", "Huevo"] },
+            { categoria: "Postres", nombre: "Coulant de Chocolate", descripcion: "Corazón fundido, acompañado de helado de vainilla.", precio: "6.00€", alergenos: ["Gluten", "Lactosa", "Huevo"] },
+            { categoria: "Postres", nombre: "Fruta de Temporada", descripcion: "Melón, sandía o piña fresca cortada.", precio: "3.50€", alergenos: [] },
+            
+            // BEBIDAS
+            { categoria: "Bebidas", nombre: "Caña de Cerveza", descripcion: "Estrella Galicia bien tirada.", precio: "1.80€", alergenos: ["Gluten"] },
+            { categoria: "Bebidas", nombre: "Copa de Vino Tinto", descripcion: "Rioja Crianza de la casa.", precio: "2.50€", alergenos: [] },
+            { categoria: "Bebidas", nombre: "Refrescos y Agua", descripcion: "Coca-cola, Fanta, Aquarius o Agua mineral.", precio: "2.00€", alergenos: [] }
+        ];
+
+        // --- 2. VARIABLES GLOBALES (El estado de la aplicación) ---
+        let categoriaActual = "Todos"; // Por defecto mostramos todo
+        const todasLasCategorias = ["Todos", "Entrantes", "Principales", "Postres", "Bebidas"];
+
+        // --- 3. DIBUJAR LOS BOTONES DE CATEGORÍA ---
+        function pintarBotonesCategorias() {
+            let contenedor = document.getElementById("barra-categorias");
+            contenedor.innerHTML = "";
+
+            todasLasCategorias.forEach(cat => {
+                // Creamos un botón para cada categoría
+                let btn = document.createElement("button");
+                btn.className = "btn-categoria";
+                if (cat === categoriaActual) btn.classList.add("activo"); // Iluminamos el seleccionado
+                btn.innerText = cat;
+                
+                // Al pulsarlo, cambiamos la categoría actual y aplicamos filtros
+                btn.onclick = () => {
+                    categoriaActual = cat;
+                    pintarBotonesCategorias(); // Repintamos para actualizar colores
+                    aplicarFiltros(); // Filtramos los platos
+                };
+                
+                contenedor.appendChild(btn);
+            });
+        }
+
+        // --- 4. DIBUJAR LOS PLATOS ---
+        function pintarCarta(listaDePlatos) {
+            let contenedor = document.getElementById("contenedor-carta");
+            contenedor.innerHTML = "";
+
+            if (listaDePlatos.length === 0) {
+                contenedor.innerHTML = "<p style='text-align:center; color:#ccc; margin-top:40px; font-size:15px;'>🍽️ No hay platos en esta categoría que cumplan con tus filtros de alergias.</p>";
+                return;
+            }
+
+            for (let plato of listaDePlatos) {
+                let textoAlergenos = plato.alergenos.length > 0 
+                    ? `⚠️ Contiene: ${plato.alergenos.join(", ")}` 
+                    : `<span class="sin-alergenos">✅ Apto (Sin alérgenos marcados)</span>`;
+
+                let htmlPlato = `
+                    <div class="plato">
+                        <div class="plato-titulo">
+                            <h3>${plato.nombre}</h3>
+                            <span class="precio">${plato.precio}</span>
+                        </div>
+                        <p class="descripcion">${plato.descripcion}</p>
+                        <div class="alergenos-lista">${textoAlergenos}</div>
+                    </div>
+                `;
+                contenedor.innerHTML += htmlPlato;
+            }
+        }
+
+        // --- 5. EL CEREBRO: FILTRADO DOBLE ---
+        function aplicarFiltros() {
+            // 1. Miramos qué alergias hay marcadas
+            let checkboxesMarcados = document.querySelectorAll('input[type="checkbox"]:checked');
+            let alergiasDelCliente = Array.from(checkboxesMarcados).map(box => box.value);
+
+            // 2. Filtramos la base de datos completa
+            let platosFiltrados = baseDeDatosPlatos.filter(plato => {
+                
+                // A) Filtro de Categoría
+                // Si la categoría actual no es "Todos" y el plato no es de esa categoría, lo descartamos
+                if (categoriaActual !== "Todos" && plato.categoria !== categoriaActual) {
+                    return false;
+                }
+
+                // B) Filtro de Alergias
+                // Si el plato contiene alguna alergia que el cliente ha marcado, lo descartamos
+                for (let alergia of alergiasDelCliente) {
+                    if (plato.alergenos.includes(alergia)) {
+                        return false; 
+                    }
+                }
+                
+                // Si sobrevive a los dos filtros, se queda en la lista
+                return true; 
+            });
+
+            // 3. Pintamos los resultados
+            pintarCarta(platosFiltrados);
+        }
+
+        // --- 6. AL ARRANCAR LA APLICACIÓN ---
+        pintarBotonesCategorias(); // Dibujamos los botones
+        aplicarFiltros(); // Pintamos todos los platos la primera vez
+
+    </script>
+</body>
+</html>

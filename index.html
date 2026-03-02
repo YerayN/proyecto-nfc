@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bar La Plaza - Menú Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-orange: #FE9400; /* Naranja más fresco */
+            --accent-orange-hover: #e67e22;
+            --accent-green: #00C853; /* Verde esmeralda vibrante */
+            --accent-green-hover: #00b34a;
+            --accent-dark-btn: #393C45; /* Gris botón oscuro modernizado */
+            --bg-body: #101115; /* Negro profundo modernizado */
+            --bg-card: #16171B; /* Gris oscuro para capas */
+            --text-heading: #BDBDBD; /* Gris claro sofisticado */
+            --text-body: #E0E3EB; /* Blanco suave */
+            --shadow-card: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif; /* Tipografía cuerpo */
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        .contenedor {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: rgba(22, 23, 27, 0.8); /* Fondo con transparencia */
+            border-radius: 20px; /* Esquinas más suaves */
+            padding: 25px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Borde sutil */
+            /* Efecto cristal esmerilado */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Título Principal con Degradado */
+        h1 { 
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FE9400 0%, #ffc163 100%);
+            
+            -webkit-background-clip: text; /* La versión para Chrome/Safari/Edge */
+            background-clip: text;         /* Añade esta línea: La versión estándar */
+            -webkit-text-fill-color: transparent;
+            
+            margin: 0; 
+            font-size: 26px;
+        }
+
+        p.subtitulo { color: var(--text-heading); font-size: 14px; margin-bottom: 30px; font-weight: 400;}
+        
+        /* Líneas separadoras modernizadas */
+        h3 { 
+            color: var(--text-body); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+            padding-bottom: 12px; 
+            margin-top: 35px;
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        h3 span.icon { margin-right: 8px; font-size: 1.2em;}
+        
+        /* Estilos de Botones Tipo Pill con Degradados Modernos */
+        .boton {
+            display: block;
+            background: linear-gradient(135deg, #FE9400 0%, #f39c12 100%); /* Naranja degradado suave */
+            color: #1a1a1a;
+            padding: 14px;
+            text-decoration: none;
+            border-radius: 30px; /* Botones Tipo Pill (Pastilla) */
+            font-weight: 700;
+            font-size: 16px;
+            margin: 12px auto;
+            width: 90%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(254, 148, 0, 0.3);
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            outline: none;
+        }
+        .boton:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(254, 148, 0, 0.2); }
+        
+        .boton-verde {
+            background: linear-gradient(135deg, #00C853 0%, #00b34a 100%); /* Verde degradado fresco */
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+        }
+        .boton-verde:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(0, 200, 83, 0.2); }
+        
+        .boton-oscuro {
+            background-color: var(--accent-dark-btn);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background-image: none;
+        }
+        .boton-oscuro:hover { background-color: #555; }
+        .boton-oscuro:active { transform: scale(0.98); }
+
+        /* Estrellas interactivas modernizadas */
+        .estrellas {
+            font-size: 45px;
+            cursor: pointer;
+            color: #393C45; /* Estrella apagada */
+            margin: 15px 0;
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        .estrella {
+            transition: color 0.15s ease-out, transform 0.1s ease; 
+        }
+        .estrella:active { transform: scale(1.1); }
+
+        /* Caja de quejas oculta */
+        #caja-quejas {
+            display: none; 
+            margin-top: 15px;
+            background-color: rgba(57, 60, 69, 0.5);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        textarea {
+            width: 90%;
+            height: 90px;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+        }
+        
+        .datos-wifi {
+            background-color: #1a1a1a;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .datos-wifi p strong { color: #f1c40f; }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h1>🍷 Bar La Plaza</h1>
+        <p class="subtitulo">Escanea, pide y disfruta.</p>
+
+        <div>
+            <h3><span class="icon">📜</span> Nuestra Oferta</h3>
+            <p style="font-size: 12px; color: #888;">Cargando carta de hoy...</p>
+            <a href="carta.html" class="boton">Ver Carta Interactiva</a>
+            <button class="boton boton-oscuro">Información de Alérgenos</button>
+        </div>
+
+        <div>
+            <h3><span class="icon">🔔</span> Atención en mesa</h3>
+            <button class="boton boton-verde" onclick="pedirPorWhatsApp('Llamar al camarero')">Llamar al camarero</button>
+            <button class="boton boton-verde" onclick="pedirPorWhatsApp('Pedir la cuenta')">Pedir la cuenta</button>
+        </div>
+
+        <div>
+            <h3><span class="icon">⭐️</span> ¿Qué tal tu experiencia?</h3>
+            <div class="estrellas">
+                <span id="estrella-1" class="estrella" onclick="evaluar(1)">★</span>
+                <span id="estrella-2" class="estrella" onclick="evaluar(2)">★</span>
+                <span id="estrella-3" class="estrella" onclick="evaluar(3)">★</span>
+                <span id="estrella-4" class="estrella" onclick="evaluar(4)">★</span>
+                <span id="estrella-5" class="estrella" onclick="evaluar(5)">★</span>
+            </div>
+
+            <div id="caja-quejas">
+                <p style="font-size: 14px;">Vaya, lamentamos no haber estado de 10. ¿En qué podemos mejorar?</p>
+                <textarea id="texto-queja" placeholder="Escribe aquí tu comentario anónimo..."></textarea>
+                <button class="boton boton-oscuro" onclick="enviarQuejaPrivada()">Enviar al gerente</button>
+            </div>
+        </div>
+
+        <div>
+            <h3><span class="icon">📶</span> Wi-Fi Gratis</h3>
+            <div class="datos-wifi">
+                <p style="margin: 5px 0;">Red: <strong>BarLaPlaza_VIP</strong></p>
+                <p style="display:none;" id="clave-wifi">CervezaFria2026</p>
+            </div>
+            <button class="boton boton-oscuro" onclick="copiarClave()">Copiar Contraseña</button>
+            <p id="mensaje-copiado" style="color: #2ecc71; font-size: 13px; display: none; margin-top: 5px;">¡Clave copiada con éxito!</p>
+        </div>
+
+        <div>
+            <h3><span class="icon">📸</span> ¡Síguenos!</h3>
+            <p style="font-size: 13px; color: #ccc;">Sube tu plato a Instagram y etiquétanos.</p>
+            <a href="https://instagram.com/tu_bar" target="_blank" class="boton boton-oscuro">@BarLaPlaza</a>
+        </div>
+    </div>
+
+    <script>
+        // 1. Lógica de las Estrellas
+        function evaluar(nota) {
+            for (let i = 1; i <= 5; i++) {
+                let estrella = document.getElementById("estrella-" + i);
+                if (i <= nota) {
+                    estrella.style.color = "#FE9400"; // Naranja activo
+                } else {
+                    estrella.style.color = "#393C45"; // Gris apagado
+                }
+            }
+
+            if (nota >= 4) {
+                document.getElementById("caja-quejas").style.display = "none";
+                window.location.href = "https://www.google.com/maps"; 
+            } else {
+                document.getElementById("caja-quejas").style.display = "block";
+            }
+        }
+
+        // 2. Lógica del Correo de Quejas
+        function enviarQuejaPrivada() {
+            let comentario = document.getElementById("texto-queja").value;
+            let emailDueño = "gerencia@barlaplaza.com"; 
+            let asunto = "Feedback privado de un cliente";
+            window.location.href = `mailto:${emailDueño}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(comentario)}`;
+        }
+
+        // 3. Lógica del WhatsApp y las Mesas
+        function pedirPorWhatsApp(accion) {
+            let parametros = new URLSearchParams(window.location.search);
+            let mesa = parametros.get('mesa');
+
+            if (!mesa) {
+                mesa = prompt("Para poder atenderte mejor, ¿en qué número de mesa estás?");
+            }
+
+            if (mesa) {
+                let numeroBar = "34600000000"; 
+                let mensaje = `Hola, la MESA ${mesa} solicita: ${accion}.`;
+                let url = `https://wa.me/${numeroBar}?text=${encodeURIComponent(mensaje)}`;
+                window.open(url, '_blank');
+            }
+        }
+
+        // 4. Lógica del Wi-Fi
+        function copiarClave() {
+            var clave = document.getElementById("clave-wifi").innerText;
+            navigator.clipboard.writeText(clave).then(function() {
+                var mensaje = document.getElementById("mensaje-copiado");
+                mensaje.style.display = "block";
+                setTimeout(function() { mensaje.style.display = "none"; }, 3000);
+            });
+        }
+    </script>
+
+</body>
+</html>
